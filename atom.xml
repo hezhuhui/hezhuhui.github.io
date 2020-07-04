@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://hezhuhui.github.io</id>
     <title>麦冬草</title>
-    <updated>2020-07-04T12:44:21.671Z</updated>
+    <updated>2020-07-04T12:45:58.007Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://hezhuhui.github.io"/>
     <link rel="self" href="https://hezhuhui.github.io/atom.xml"/>
@@ -60,6 +60,8 @@ while(fast &gt;= slow &amp;&amp; fast &lt; len){
  }
         return min;
 </code></pre>
+<h2 id="解题技巧">解题技巧</h2>
+<p>todo</p>
 <h2 id="总结">总结</h2>
 <ol>
 <li>不管是求最大或最小问题，fast必定是满足条件的情况下尽可能往右移动。</li>
@@ -165,9 +167,9 @@ Bob--&gt;Alice: I am good thanks!
 <h3 id="复选框">复选框</h3>
 <p>使用 <code>- [ ]</code> 和 <code>- [x]</code> 语法可以创建复选框，实现 todo-list 等功能。例如：</p>
 <ul class="contains-task-list">
-<li class="task-list-item"><input class="task-list-item-checkbox" checked="" disabled="" type="checkbox" id="task-item-7635772"><label class="task-list-item-label" for="task-item-7635772"> 已完成事项</label></li>
-<li class="task-list-item"><input class="task-list-item-checkbox" disabled="" type="checkbox" id="task-item-5504451"><label class="task-list-item-label" for="task-item-5504451"> 待办事项1</label></li>
-<li class="task-list-item"><input class="task-list-item-checkbox" disabled="" type="checkbox" id="task-item-6708726"><label class="task-list-item-label" for="task-item-6708726"> 待办事项2</label></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" checked="" disabled="" type="checkbox" id="task-item-143745"><label class="task-list-item-label" for="task-item-143745"> 已完成事项</label></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" disabled="" type="checkbox" id="task-item-2771082"><label class="task-list-item-label" for="task-item-2771082"> 待办事项1</label></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" disabled="" type="checkbox" id="task-item-3893719"><label class="task-list-item-label" for="task-item-3893719"> 待办事项2</label></li>
 </ul>
 <blockquote>
 <p><strong>注意：<strong>目前支持尚不完全，在印象笔记中勾选复选框是无效、不能同步的，所以必须在</strong>马克飞象</strong>中修改 Markdown 原文才可生效。下个版本将会全面支持。</p>
