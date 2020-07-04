@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>滑动窗口 | 麦冬草</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://hezhuhui.github.io/favicon.ico?v=1593866428821">
+<link rel="stylesheet" href="https://hezhuhui.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="滑动窗口构成
+滑动窗口问题一般3要素和1个求值条件:
+要素：
+
+快指针fast
+慢指针slow
+资源值(一般随着fast右移减少，slow左移增多)
+
+求值条件：
+
+最大或最小区间或长度
+滑动窗口题目汇总
+
+求最大值时:
+
+满足条件前提下，..." />
+    <meta name="keywords" content="数据结构与算法" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://hezhuhui.github.io">
+        <img src="https://hezhuhui.github.io/images/avatar.png?v=1593866428821" class="site-logo">
+        <h1 class="site-title">麦冬草</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/java" class="site-nav">
+            JAVA&amp;JVM
+          </a>
+        
+      
+        
+          <a href="/bigdata" class="site-nav">
+            大数据
+          </a>
+        
+      
+        
+          <a href="/database" class="site-nav">
+            数据库
+          </a>
+        
+      
+        
+          <a href="/algorithm" class="site-nav">
+            数据结构与算法
+          </a>
+        
+      
+        
+          <a href="/os" class="site-nav">
+            操作系统原理
+          </a>
+        
+      
+        
+          <a href="/writer" class="site-nav">
+            写作技巧
+          </a>
+        
+      
+        
+          <a href="/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      温故而知新
+    </div>
+    <div class="site-footer">
+       | <a class="rss" href="https://hezhuhui.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">滑动窗口</h2>
+            <div class="post-date">2020-07-04</div>
+            
+            <div class="post-content" v-pre>
+              <h2 id="滑动窗口构成">滑动窗口构成</h2>
+<p>滑动窗口问题一般3要素和1个求值条件:<br>
+要素：</p>
+<ul>
+<li>快指针fast</li>
+<li>慢指针slow</li>
+<li>资源值(一般随着fast右移减少，slow左移增多)</li>
+</ul>
+<p>求值条件：</p>
+<ul>
+<li>最大或最小区间或长度<br>
+<a href="https://leetcode-cn.com/problems/longest-substring-without-repeating-characters/solution/hua-dong-chuang-kou-by-powcai/">滑动窗口题目汇总</a></li>
+</ul>
+<h2 id="求最大值时">求最大值时:</h2>
+<ol>
+<li>满足条件前提下，fast要尽可能的扩展，记录资源消耗，扩展过程中slow不进行收缩；</li>
+<li>一旦资源消耗完，用while进入slow右移来释放资源（使用while的原因是fast到最右边，slow需要继续右移完成循环）；</li>
+<li>优化技巧【动态（尽可能消耗）+固定窗口（保持资源为0）】:<br>
+因为fast尽可能扩展后，下一个元素必定是消耗K。slow右移动增加K，fast右移动消耗K，刚好抵消。<br>
+所以当slow右移释放资源时，fast可以同时右移占用资源，即slow和fast同时移动，使得资源一直存有被消耗完的状态来减少循环次数。<br>
+<a href="https://leetcode-cn.com/problems/max-consecutive-ones-iii/">动态+固定窗口求最大值</a></li>
+</ol>
+<h2 id="求最小值时">求最小值时：</h2>
+<ol>
+<li>初始时，fast尽可能右移，</li>
+<li>当滑动窗口内的数据满足条件的边界时，slow进行收缩，fast保持不变。</li>
+<li>在slow收缩过程求最小值<br>
+<a href="https://leetcode-cn.com/problems/minimum-size-subarray-sum/">动态窗口求最下值</a></li>
+</ol>
+<ul>
+<li>求最小值通用代码模板如下:  *</li>
+</ul>
+<pre><code>//  定义退出条件
+while(fast &gt;= slow &amp;&amp; fast &lt; len){
+        //fast指针右移
+        // 记录资源消耗，
+        while(// 资源消耗完的条件){
+            //slow右移
+            //释放消耗的资源
+            //记录fast和slow之间的长度，返回最小区间
+        }
+ }
+        return min;
+</code></pre>
+<h2 id="总结">总结</h2>
+<ol>
+<li>不管是求最大或最小问题，fast必定是满足条件的情况下尽可能往右移动。</li>
+<li>slow的移动方式分最大和最小问题讨论</li>
+</ol>
+<ul>
+<li>最大区间：<br>
+slow左移停止的条件是fast可以发送右移（打破区间符合条件的情形），继续计算更多的结果，来比较获得最大区间。</li>
+<li>最小区间：<br>
+区间符合条件的情形前提，slow尽量右移，缩小区间来换取最小区间，同时取得fast右移来遍历更多的可能结构。</li>
+</ul>
+<ol start="3">
+<li>slow右移（增加资源）在求最大区间和最小区间时有一个共同作用:打破区间符合条件的情形（资源剩余），使得fast继续右移（尽量消耗资源）以获得更多为遍历情形中可能出现的结果。</li>
+</ol>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://hezhuhui.github.io/algorithm/" class="tag">
+                    数据结构与算法
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://hezhuhui.github.io/Introduction/">
+                  <h3 class="post-title">
+                     欢迎使用马克飞象
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+
+  </body>
+</html>
