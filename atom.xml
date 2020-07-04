@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://hezhuhui.github.io</id>
     <title>麦冬草</title>
-    <updated>2020-07-04T12:42:45.192Z</updated>
+    <updated>2020-07-04T12:44:21.671Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://hezhuhui.github.io"/>
     <link rel="self" href="https://hezhuhui.github.io/atom.xml"/>
@@ -36,14 +36,14 @@
 <li>优化技巧【动态（尽可能消耗）+固定窗口（保持资源为0）】:<br>
 因为fast尽可能扩展后，下一个元素必定是消耗K。slow右移动增加K，fast右移动消耗K，刚好抵消。<br>
 所以当slow右移释放资源时，fast可以同时右移占用资源，即slow和fast同时移动，使得资源一直存有被消耗完的状态来减少循环次数。<br>
-<a href="https://leetcode-cn.com/problems/max-consecutive-ones-iii/">动态+固定窗口求最大值</a></li>
+<a href="https://leetcode-cn.com/problems/max-consecutive-ones-iii/">动态+固定窗口求最大区间</a></li>
 </ol>
 <h2 id="求最小值时">求最小值时：</h2>
 <ol>
 <li>初始时，fast尽可能右移，</li>
 <li>当滑动窗口内的数据满足条件的边界时，slow进行收缩，fast保持不变。</li>
 <li>在slow收缩过程求最小值<br>
-<a href="https://leetcode-cn.com/problems/minimum-size-subarray-sum/">动态窗口求最下值</a></li>
+<a href="https://leetcode-cn.com/problems/minimum-size-subarray-sum/">动态窗口求最小区间</a></li>
 </ol>
 <ul>
 <li>求最小值通用代码模板如下:  *</li>
@@ -165,9 +165,9 @@ Bob--&gt;Alice: I am good thanks!
 <h3 id="复选框">复选框</h3>
 <p>使用 <code>- [ ]</code> 和 <code>- [x]</code> 语法可以创建复选框，实现 todo-list 等功能。例如：</p>
 <ul class="contains-task-list">
-<li class="task-list-item"><input class="task-list-item-checkbox" checked="" disabled="" type="checkbox" id="task-item-9761482"><label class="task-list-item-label" for="task-item-9761482"> 已完成事项</label></li>
-<li class="task-list-item"><input class="task-list-item-checkbox" disabled="" type="checkbox" id="task-item-6434198"><label class="task-list-item-label" for="task-item-6434198"> 待办事项1</label></li>
-<li class="task-list-item"><input class="task-list-item-checkbox" disabled="" type="checkbox" id="task-item-4935008"><label class="task-list-item-label" for="task-item-4935008"> 待办事项2</label></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" checked="" disabled="" type="checkbox" id="task-item-7635772"><label class="task-list-item-label" for="task-item-7635772"> 已完成事项</label></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" disabled="" type="checkbox" id="task-item-5504451"><label class="task-list-item-label" for="task-item-5504451"> 待办事项1</label></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" disabled="" type="checkbox" id="task-item-6708726"><label class="task-list-item-label" for="task-item-6708726"> 待办事项2</label></li>
 </ul>
 <blockquote>
 <p><strong>注意：<strong>目前支持尚不完全，在印象笔记中勾选复选框是无效、不能同步的，所以必须在</strong>马克飞象</strong>中修改 Markdown 原文才可生效。下个版本将会全面支持。</p>

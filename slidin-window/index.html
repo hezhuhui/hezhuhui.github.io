@@ -8,7 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://hezhuhui.github.io/favicon.ico?v=1593866561772">
+<link rel="shortcut icon" href="https://hezhuhui.github.io/favicon.ico?v=1593866652764">
 <link rel="stylesheet" href="https://hezhuhui.github.io/styles/main.css">
 
 
@@ -43,7 +43,7 @@
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://hezhuhui.github.io">
-        <img src="https://hezhuhui.github.io/images/avatar.png?v=1593866561772" class="site-logo">
+        <img src="https://hezhuhui.github.io/images/avatar.png?v=1593866652764" class="site-logo">
         <h1 class="site-title">麦冬草</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -153,14 +153,14 @@
 <li>优化技巧【动态（尽可能消耗）+固定窗口（保持资源为0）】:<br>
 因为fast尽可能扩展后，下一个元素必定是消耗K。slow右移动增加K，fast右移动消耗K，刚好抵消。<br>
 所以当slow右移释放资源时，fast可以同时右移占用资源，即slow和fast同时移动，使得资源一直存有被消耗完的状态来减少循环次数。<br>
-<a href="https://leetcode-cn.com/problems/max-consecutive-ones-iii/">动态+固定窗口求最大值</a></li>
+<a href="https://leetcode-cn.com/problems/max-consecutive-ones-iii/">动态+固定窗口求最大区间</a></li>
 </ol>
 <h2 id="求最小值时">求最小值时：</h2>
 <ol>
 <li>初始时，fast尽可能右移，</li>
 <li>当滑动窗口内的数据满足条件的边界时，slow进行收缩，fast保持不变。</li>
 <li>在slow收缩过程求最小值<br>
-<a href="https://leetcode-cn.com/problems/minimum-size-subarray-sum/">动态窗口求最下值</a></li>
+<a href="https://leetcode-cn.com/problems/minimum-size-subarray-sum/">动态窗口求最小区间</a></li>
 </ol>
 <ul>
 <li>求最小值通用代码模板如下:  *</li>
