@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://hezhuhui.github.io</id>
     <title>麦冬草</title>
-    <updated>2020-07-12T09:12:23.780Z</updated>
+    <updated>2020-07-12T14:20:10.908Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://hezhuhui.github.io"/>
     <link rel="self" href="https://hezhuhui.github.io/atom.xml"/>
@@ -10,6 +10,13 @@
     <logo>https://hezhuhui.github.io/images/avatar.png</logo>
     <icon>https://hezhuhui.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, 麦冬草</rights>
+    <entry>
+        <title type="html"><![CDATA[由两个遍历数组构造二叉树]]></title>
+        <id>https://hezhuhui.github.io/gen-ju-liang-ge-bian-li-de-shu-zu-gou-zao-er-cha-shu/</id>
+        <link href="https://hezhuhui.github.io/gen-ju-liang-ge-bian-li-de-shu-zu-gou-zao-er-cha-shu/">
+        </link>
+        <updated>2020-07-12T14:18:42.000Z</updated>
+    </entry>
     <entry>
         <title type="html"><![CDATA[二叉树的遍历]]></title>
         <id>https://hezhuhui.github.io/er-cha-shu-de-bian-li/</id>

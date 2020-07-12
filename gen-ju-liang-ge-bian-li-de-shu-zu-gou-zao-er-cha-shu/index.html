@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>由两个遍历数组构造二叉树 | 麦冬草</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://hezhuhui.github.io/favicon.ico?v=1594563606812">
+<link rel="stylesheet" href="https://hezhuhui.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="重构二叉树题型一般是根据给出的前序/后序遍历+中序遍历来生成二叉树。
+根据前序和中序遍历构造二叉树
+根据后序和中序遍历构造二叉树
+
+重构的原理
+因为前序/后序遍历的第一个/最后一个是根节点，然后根据根节点在中序遍历中的位置，可以推断出左右子..." />
+    <meta name="keywords" content="数据结构与算法" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://hezhuhui.github.io">
+        <img src="https://hezhuhui.github.io/images/avatar.png?v=1594563606812" class="site-logo">
+        <h1 class="site-title">麦冬草</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/java" class="site-nav">
+            JAVA&amp;JVM
+          </a>
+        
+      
+        
+          <a href="/bigdata" class="site-nav">
+            大数据
+          </a>
+        
+      
+        
+          <a href="/database" class="site-nav">
+            数据库
+          </a>
+        
+      
+        
+          <a href="/algorithm" class="site-nav">
+            数据结构与算法
+          </a>
+        
+      
+        
+          <a href="/os" class="site-nav">
+            操作系统原理
+          </a>
+        
+      
+        
+          <a href="/writer" class="site-nav">
+            写作技巧
+          </a>
+        
+      
+        
+          <a href="/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      温故而知新
+    </div>
+    <div class="site-footer">
+       | <a class="rss" href="https://hezhuhui.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">由两个遍历数组构造二叉树</h2>
+            <div class="post-date">2020-07-12</div>
+            
+            <div class="post-content" v-pre>
+              <p>重构二叉树题型一般是根据给出的前序/后序遍历+中序遍历来生成二叉树。<br>
+<a href="https://leetcode-cn.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/">根据前序和中序遍历构造二叉树</a><br>
+<a href="https://leetcode-cn.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/">根据后序和中序遍历构造二叉树</a></p>
+<ul>
+<li>重构的原理<br>
+因为前序/后序遍历的第一个/最后一个是根节点，然后根据根节点在中序遍历中的位置，可以推断出左右子树的范围。<br>
+但是前序遍历+后序遍历是无法重构二叉树的，因为无法根据根节点划分左右子树。<br>
+原理如图所示。<br>
+<img src="https://github.com/hezhuhui/gallery/raw/master/leetcode/inorder%20%5B2%5D.jpg" alt="image" loading="lazy"><br>
+<img src="en-resource://database/663:0" alt="54f12d77e7995151733f6aab610b4aa1.png" loading="lazy"><br>
+如图所示的关系是递归的，即前序遍历的左子树和中序遍历的左子树是有着同样的关系。</li>
+<li><a href="https://leetcode-cn.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/">根据前序和中序遍历构造二叉树</a><br>
+分析:</li>
+</ul>
+<ol>
+<li>前序遍历中的第一个节点为根节点，从该根节点递归可以完成树的构造。</li>
+<li>根据根节点可以从中序遍历得到左子树的长度和右子树的长度【可以使用最左边界、最右边界和根节点获得】。每个子树也具有这个特性，所以可以利用此特性逐步递归(拆解)，每拆解一次，需要生成一个节点接到上一个根节点上。<br>
+3、最终递归的最左边界大于最右边界时，递归结束，返回。</li>
+</ol>
+<hr>
+<p>特别提醒:</p>
+<ul>
+<li>在构造二叉树过程中，中序遍历到的作用时确定左右子树的范围，从而确定前序遍历左右子树的根节点位置。前序遍历起到的作用是作为数据源，构造二叉树。</li>
+<li>中序遍历主要用于确定前序遍历的左右子树的根节点，但是如果只有中序遍历的根节点的位置是无法确定左右子树前序遍历根节点位置，例如右子树的根节点依赖根节点位置，左子树的长度（中序遍历左子树左边界+根节点在中序遍历的位置），所以<strong>入参需要有中序遍历左子树的左边界和右子树的右边界。</strong></li>
+</ul>
+<hr>
+<p>代码实现:</p>
+<pre><code> public TreeNode buildTree(int[] preorder, int[] inorder) {
+        // base case
+        if(preorder == null || inorder == null){
+            return null;
+        }
+        if(preorder.length == 0 || inorder.length == 0){
+            return null;
+        }
+        // 把中序遍历的值和索引放到map，加快根据根节点获取中序遍历中的位置，来却左右子树的节点个数。
+        Map&lt;Integer, Integer&gt; map = new HashMap&lt;&gt;();
+        for(int i = 0; i &lt; inorder.length; i++){
+            map.put(inorder[i], i);
+        }
+        // 初始化，前序遍历的第一个元素为根节点，
+        return bfs(preorder, 0, 0, inorder.length, map);
+    }
+    /**
+    * pre 前序遍历根节点的索引
+    * inLeft 中序遍历左子树的左边界，如果是最左侧的数据构造树，那么一直为0，如果不是，那么值是inRoot+1
+    * inRight 中序遍历右子树的右边界，如果是最右侧，那么一直为末尾元素，如果不是，那么就是inRoot-1
+    * map 是中序遍历和索引的映射，方便根据根节点进行获取索引来计算左右子树节点个数来确定前序遍历根节点
+    **/
+    TreeNode bfs(int[] preorder, int pre, int inLeft , int inRight, Map&lt;Integer, Integer&gt; map){
+            if(inRight &lt; inLeft || pre &gt;= preorder.length){
+                return null;
+            }
+            // 获取中序遍历 根节点的索引
+            int inRoot = map.get(preorder[pre]);
+            // 根据可以确定的根节点 构造树
+            TreeNode tmp = new TreeNode(preorder[pre]);
+            // 构造左子树
+            // 左子树前序遍历根节点为 上一个根节点的下一个元素
+            // 左子树的中序遍历的左边界跟上一个递归一致
+            // 左子树的中序遍历的右边界是中序遍历中根节点的上一个元素
+            tmp.left = bfs(preorder, pre+1, inLeft ,inRoot-1,map);
+            //右子树的前序根节点与根节点和左子树长度（inRoot - inLeft）
+            //求右子树根节点时，用到了左子树的长度，所以传入左子树的最左位置是很有必要的。
+            tmp.right = bfs(preorder, pre + inRoot - inLeft + 1, inRoot + 1, inRight, map);
+            return tmp;
+    }
+</code></pre>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://hezhuhui.github.io/algorithm/" class="tag">
+                    数据结构与算法
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://hezhuhui.github.io/er-cha-shu-de-bian-li/">
+                  <h3 class="post-title">
+                    二叉树的遍历
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+
+  </body>
+</html>
