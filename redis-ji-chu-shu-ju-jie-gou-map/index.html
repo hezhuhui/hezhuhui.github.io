@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>redis基础数据结构--map | 麦冬草</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://hezhuhui.github.io/favicon.ico?v=1597498764778">
+<link rel="stylesheet" href="https://hezhuhui.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="map的实现
+由于C语言没有map的数据结构，所有redis是自己实现的map，在Redis中，哈希类型是指键值本身又是一个键值对结构，形如value={{field1，value1}，...{fieldN，valueN}}。
+
+计算has..." />
+    <meta name="keywords" content="数据库" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://hezhuhui.github.io">
+        <img src="https://hezhuhui.github.io/images/avatar.png?v=1597498764778" class="site-logo">
+        <h1 class="site-title">麦冬草</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/java" class="site-nav">
+            JAVA&amp;JVM
+          </a>
+        
+      
+        
+          <a href="/bigdata" class="site-nav">
+            大数据
+          </a>
+        
+      
+        
+          <a href="/database" class="site-nav">
+            数据库
+          </a>
+        
+      
+        
+          <a href="/algorithm" class="site-nav">
+            数据结构与算法
+          </a>
+        
+      
+        
+          <a href="/os" class="site-nav">
+            操作系统原理
+          </a>
+        
+      
+        
+          <a href="/writer" class="site-nav">
+            写作技巧
+          </a>
+        
+      
+        
+          <a href="/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      温故而知新
+    </div>
+    <div class="site-footer">
+       | <a class="rss" href="https://hezhuhui.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">redis基础数据结构--map</h2>
+            <div class="post-date">2020-08-15</div>
+            
+            <div class="post-content" v-pre>
+              <h2 id="map的实现">map的实现</h2>
+<p>由于C语言没有map的数据结构，所有redis是自己实现的map，在Redis中，哈希类型是指键值本身又是一个键值对结构，形如value={{field1，value1}，...{fieldN，valueN}}。</p>
+<ol>
+<li>计算hash值和索引值<br>
+使用的hash算法为MurmurHash，计算得到hash值，然后hash值与map的长度取与，得到索引值。</li>
+<li>但两个不同的key的索引值相同时，那么就会出现hash冲突。redis使用链地址法来解决hash冲突，链地址法也是java的hashmap解决冲突的方法。如果存在大量hash冲突，那么就会变成一个长链表。解决hash冲突的具体实现:</li>
+</ol>
+<ul>
+<li>假如某个节点上已有k1-v1，此时添加k2-v2。</li>
+<li>k2-v2的索引值与k1-v1相等，那么节点的头设为k2-v2，k2-v2的next为k1-v1。因为链地址法没有指向链表尾部的指针，如果把k2-v2放到尾部，需要遍历一次链接，为了提高效率，把k2-v2放到头部能够实现O(1)的插入。<br>
+<img src="en-resource://database/688:1" alt="8e75ebf543a1d39708ac283cdd8aecc9.png" loading="lazy"></li>
+</ul>
+<ol start="3">
+<li>rehash的时机--<strong>在保存期间，redis会提高负载因子，减少rehash操作，从而避免不必要的操作写入内存。</strong></li>
+</ol>
+<ul>
+<li>服务器没有执行保存命令，负载因子大于1。</li>
+<li>服务器正在执行保存命令，并且负载因子大于5。</li>
+</ul>
+<ol start="4">
+<li>渐进式rehash--避免集中rehash带来庞大的计算量<br>
+在重发rehash时，会分配一个空间ht[1]，老的空间为ht[0]。<br>
+在每次对需要rehash的变量操作时，会触发一次rehash，将变量从ht[0]搬到ht[1].<br>
+渐进式rehash期间的操作：</li>
+</ol>
+<ul>
+<li>删除，查找和更新都会在ht[0]和ht[1]进行，优先ht[0]再操作ht[1]。</li>
+<li>增加操作只向ht[1]添加，保证了ht[0]只减少不增加，最终ht[0]变为空，则释放。</li>
+</ul>
+<h2 id="map的命令">map的命令</h2>
+<p>添加map</p>
+<pre><code>hset key field value
+</code></pre>
+<p>成功返回1，失败返回0。<br>
+获取值</p>
+<pre><code>hget key field
+</code></pre>
+<p>提示:<br>
+获取map元素使用hgetall是一一列举map，有可能阻塞redis。如果只获取部分，推荐使用hmget，一定需要获取全部的话，需要使用hscan渐进式地进行获取。</p>
+<h2 id="map的使用场景">map的使用场景</h2>
+<p>可以使用map存储关系型的数据库的数据，但是注意两种的区别：</p>
+<ul>
+<li>哈希类型是稀疏的，而关系型数据库是完全结构化的，例如哈希类型每个键可以有不同的field，而关系型数据库一旦添加新的列，所有行都要为其设置值（即使为NULL）。</li>
+<li>关系型数据库可以做复杂的关系查询，而Redis去模拟关系型复杂查询开发困难，维护成本高。<br>
+缓冲结构化数据的三种方法：</li>
+</ul>
+<ol>
+<li>将结构化数据用string类型逐个存起来。</li>
+</ol>
+<pre><code>set user:1:name tom
+set user:1:age 23
+set user:1:city beijing
+</code></pre>
+<p>优点: 直观简单，每个属性都支持更新<br>
+缺点：key个数过多，占用内存过大，信息内聚性差，一般不建议用于生产环境。<br>
+2. 序列号用户信息，存入value。</p>
+<pre><code>set user:1 serialize(userInfo)
+</code></pre>
+<p>优点：简单、提高内存使用率<br>
+缺点：所有的操作都需要序列化和反序列化，计算消耗高<br>
+3.属性存储到map中，每个属性和值对应field-value，但主键只能有一个，即只能根据主键操作。</p>
+<pre><code>hmset user:1 name tomage 23 city beijing
+</code></pre>
+<p>优点：简单直观，如果使用合理可以减少内存空间的使用。<br>
+缺点：要控制哈希在ziplist和hashtable两种内部编码的转换，hashtable会<br>
+消耗更多内存。</p>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://hezhuhui.github.io/database/" class="tag">
+                    数据库
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://hezhuhui.github.io/redis-ji-chu-shu-ju-jie-gou-list/">
+                  <h3 class="post-title">
+                    redis基础数据结构--list 
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+
+  </body>
+</html>
