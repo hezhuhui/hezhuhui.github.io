@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>redis基础数据结构-string | 麦冬草</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://hezhuhui.github.io/favicon.ico?v=1597497993601">
+<link rel="stylesheet" href="https://hezhuhui.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="string的底层实现
+
+redis是一个kv数据库，k都是string，v可以是string、list、map、set和zset。其中string变量使用的不是C语言原生的字符串，只有字面量使用了C语言的字符串。这是基于安全性、效率和功能..." />
+    <meta name="keywords" content="数据库" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://hezhuhui.github.io">
+        <img src="https://hezhuhui.github.io/images/avatar.png?v=1597497993601" class="site-logo">
+        <h1 class="site-title">麦冬草</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/java" class="site-nav">
+            JAVA&amp;JVM
+          </a>
+        
+      
+        
+          <a href="/bigdata" class="site-nav">
+            大数据
+          </a>
+        
+      
+        
+          <a href="/database" class="site-nav">
+            数据库
+          </a>
+        
+      
+        
+          <a href="/algorithm" class="site-nav">
+            数据结构与算法
+          </a>
+        
+      
+        
+          <a href="/os" class="site-nav">
+            操作系统原理
+          </a>
+        
+      
+        
+          <a href="/writer" class="site-nav">
+            写作技巧
+          </a>
+        
+      
+        
+          <a href="/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      温故而知新
+    </div>
+    <div class="site-footer">
+       | <a class="rss" href="https://hezhuhui.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">redis基础数据结构-string</h2>
+            <div class="post-date">2020-08-15</div>
+            
+            <div class="post-content" v-pre>
+              <h2 id="string的底层实现">string的底层实现</h2>
+<ol>
+<li>redis是一个kv数据库，k都是string，v可以是string、list、map、set和zset。其中string变量使用的不是C语言原生的字符串，只有字面量使用了C语言的字符串。这是基于安全性、效率和功能方面的考虑。<br>
+<strong>在redis中如何保存string的键值对呢，如命令set hello world？</strong><br>
+redis在数据库中创建一个键值对时，键值对的键是一个sds对象，对象底层保存着键的值hello。同时键值对的值也是一个sds对象，保存着键值对的值world。</li>
+<li>为什么不用C语言原生字符串进行存储，而自定义了SDS存储字符串？<br>
+redis使用SDS来存储string，sds定义如下：</li>
+</ol>
+<pre><code>struct sdshdr{
+//记录buf的字符数量
+//等于字符串的长度，可以实现O(1)复杂度获取长度，比C语言的O(N)快
+int len;
+//表示buf未使用的字节数，可以实现空间预分配和惰性加载
+int free;
+// 保存字符串，保存的是数据的二进制，根据len得到结束位置，所以可以实现文本，音频图片的存储，不依赖C语言的'/0'来判断结束。
+char buf[];
+}
+</code></pre>
+<p>SDS与C语言字符串的区别，如图<br>
+<img src="en-resource://database/678:1" alt="d3357a22791ffcb912970a9e8c7f209c.png" loading="lazy"></p>
+<ul>
+<li>防止溢出--<strong>通过freeO(1)判断</strong><br>
+通过free，可以以O(1)判断分配新的字符串会不会缓冲区溢出。如果溢出，会触发SDS的空间预分配，可以避免了C语言string的频繁分配空间（因为分配内存消耗资源大）。</li>
+<li>快速获取长度--<strong>通过len，O(1)获取</strong><br>
+获取字符串的时间复杂度度，SDS通过len获取，时间复杂度为O(1)，C字符串为O(N).<br>
+因为C语言的字符串是用char数组存储的，每次获取长度需要遍历一次字符串。但是SDS使用了一个int，记录了字符串的长度，在修改SDS字符串的同时修改长度，所有可以达到O(1)获取字符串的长度。</li>
+<li>SDS可以提高增删字符串的效率--<strong>通过空间预分配和惰性空间释放</strong>
+<ol>
+<li>
+<p>空间预分配--当字符串空间free为0，再增加字符串时，会分配更多的空间来实现空间预分配，防止每增加一次字符需要分配一次空间, <strong>使得连续增加N次字符串的内存重分配次数从N变为最多N</strong>。预分配规则为:</p>
+<table>
+<thead>
+<tr>
+<th>触发空间分配情况</th>
+<th>空间重分配后free大小(未写入增加的字符)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>len &lt; 1M</td>
+<td>分配空间为len，即free==len + 1（1位结束字符的大小）</td>
+</tr>
+<tr>
+<td>len &gt;= 1M</td>
+<td>分配空间为1M，即free = 1M + 1</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>惰性空间释放--优化字符串缩短，不会进行空间重分配，而是使用free记录释放的空间，以便后续继续使用上这些分配的空间。</p>
+</li>
+</ol>
+</li>
+<li>SDS二进制安全--<strong>不以'/0'为结束标记，以len</strong><br>
+C语言字符串因为以'/0'判断结束，所以只能保存文本，非文本的需要编码成文本，如base64方式。SDS将数据变成二进制存入buf，而且不以'/0'为判断是否结束，而是以len，从而能做到存入什么，取出就是什么，因此能够存储任意数据。</li>
+<li>兼容C的函数--<strong>SDS还结尾还是以‘/0’，只是不做为结束标志</strong></li>
+</ul>
+<h2 id="string的常用命令">string的常用命令</h2>
+<ol>
+<li>设置值--分布式锁/缓冲/共享session</li>
+</ol>
+<pre><code>set key value [ex seconds] [px milliseconds] [nx|xx]
+</code></pre>
+<p>参数说明:<br>
+ex seconds : 秒级过期时间<br>
+px milliseconds: 毫秒级过期时间<br>
+nx: 键不存在时，才可以设置成功，主要用于添加。<br>
+xx: 键存储时，才可以设置成功，主要用于更新。<br>
+2.  获取值</p>
+<pre><code>get key
+</code></pre>
+<p>如果key存在返回 value值，不存在返回nil<br>
+3. 批量设置/获取--mset/mget<br>
+可以减少IO次数，但是注意批量操作太复杂会阻塞redis[redis工作线程为单线程]<br>
+4. 自增操作--计数</p>
+<pre><code>incr key
+</code></pre>
+<p>如果value不是整型，返回错误<br>
+value是整型，返回自增的结果<br>
+key不存在，按照0开始自增，返回1.<br>
+<strong>Q: redis的自增相比其他CAS实现的自增有什么优势？</strong><br>
+A:redis工程线程是单线程的，不需要进行CAS，任何命令到redis都是顺序执行的，所有redis自增的效率更高。</p>
+<h2 id="string的应用场景">string的应用场景</h2>
+<ol>
+<li>缓存--set<br>
+作为后端的缓存层，起到加速读写和降低后端压力的作用，支持更高的并发，同时缓存的设计和实现是开发需要注意的重点，请看<a href="dsfas">redis缓存设计</a>。由于SDS是二进制安全的，所以string也可以用于缓存图片等媒体数据。<br>
+<img src="en-resource://database/680:1" alt="a9f89664b931d02c005669f806b3615e.png" loading="lazy"><br>
+提示：由于redis没有命名空间，所以建议key的命名规则为：对象名：id：[属性].</li>
+<li>计数--incre<br>
+redis可以使用incre作为计数器，然后将数据异步落盘。<br>
+提示:需要考虑计数器的防作弊，不同维度计数和落盘问题。</li>
+<li>共享session--set<br>
+分布式部署时，一个服务通常有多个实例，用户会访问到不同的实例上，但是用户刷新页面，请求又会到其他实例，但是此时不应该让用户重复登录。因此可以把session记录到redis，设置过期时间，多个实现通过redis共享session。<br>
+提示:使用redis共享session只是其中一种方案，也可以通过SLB设置同一个用户的请求只落在同一个实例来实现会话保持。</li>
+<li>限速--使用set 设置过期时间和自增来实现<br>
+有些应用处于安全考虑，限定请求一段时间内的请求次数。时间限制可以使用redis键的过期时间，次数可以使用incre实现计数器功能，来进行过滤非法操作。</li>
+<li>实现分布式锁<a href="https://www.cnblogs.com/moxiaotao/p/10829799.html">详解</a>--set key value [ex seconds] [px milliseconds] [nx|xx]是原子命令。<br>
+实现分布式锁的关键是设置具有过期时间{防止死锁}，v是随机的{防止被其他为解锁}，判断不存在{nx，key不存在时加锁}，设置过期时间和值必须是原子性。<br>
+提示: redis实现分布式锁需要满足：</li>
+</ol>
+<ul>
+<li>互斥性。在任意时刻，只有一个客户端能持有锁。--value值随机。</li>
+<li>不会发生死锁。即使有一个客户端在持有锁的期间崩溃而没有主动解锁，也能保证后续其他客户端能加锁--设置过期时间。</li>
+<li>具有容错性。只要大部分的Redis节点正常运行，客户端就可以加锁和解锁--redis集群保证。</li>
+<li>解铃还须系铃人。加锁和解锁必须是同一个客户端，客户端自己不能把别人加的锁给解了--value值随机。</li>
+<li>加锁操作原子性--set 命令同时设置过期时间和值。</li>
+</ul>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://hezhuhui.github.io/database/" class="tag">
+                    数据库
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://hezhuhui.github.io/shu-de-ti-xing-zong-jie/">
+                  <h3 class="post-title">
+                    树的题型总结
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+
+  </body>
+</html>
