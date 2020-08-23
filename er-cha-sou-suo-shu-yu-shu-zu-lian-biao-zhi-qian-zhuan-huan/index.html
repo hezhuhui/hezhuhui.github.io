@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>二叉搜索树与数组/链表之前转换 | 麦冬草</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://hezhuhui.github.io/favicon.ico?v=1598179199417">
+<link rel="stylesheet" href="https://hezhuhui.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="二叉搜索树的性质
+
+二叉搜索树上所有的非空左子树小于跟节点，所有的非空右子树大于根节点。
+中序遍历二叉搜索树，可以得到从小到大的序列。
+
+题型解析
+给出升序/降序的数组/链表，需要转换成二叉搜索树。由性质，根节点大于左子树，小于右子树，可以..." />
+    <meta name="keywords" content="数据结构与算法" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://hezhuhui.github.io">
+        <img src="https://hezhuhui.github.io/images/avatar.png?v=1598179199417" class="site-logo">
+        <h1 class="site-title">麦冬草</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/java" class="site-nav">
+            JAVA&amp;JVM
+          </a>
+        
+      
+        
+          <a href="/bigdata" class="site-nav">
+            大数据
+          </a>
+        
+      
+        
+          <a href="/database" class="site-nav">
+            数据库
+          </a>
+        
+      
+        
+          <a href="/algorithm" class="site-nav">
+            数据结构与算法
+          </a>
+        
+      
+        
+          <a href="/os" class="site-nav">
+            操作系统原理
+          </a>
+        
+      
+        
+          <a href="/writer" class="site-nav">
+            写作技巧
+          </a>
+        
+      
+        
+          <a href="/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      温故而知新
+    </div>
+    <div class="site-footer">
+       | <a class="rss" href="https://hezhuhui.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">二叉搜索树与数组/链表之前转换</h2>
+            <div class="post-date">2020-08-23</div>
+            
+            <div class="post-content" v-pre>
+              <h2 id="二叉搜索树的性质">二叉搜索树的性质</h2>
+<ul>
+<li>二叉搜索树上所有的非空左子树小于跟节点，所有的非空右子树大于根节点。</li>
+<li>中序遍历二叉搜索树，可以得到从小到大的序列。</li>
+</ul>
+<h2 id="题型解析">题型解析</h2>
+<p>给出升序/降序的数组/链表，需要转换成二叉搜索树。由性质，根节点大于左子树，小于右子树，可以知道根节点就是有序的数组/链表的中间元素，如果是升序，中间元素的左侧是左子树，右侧是右子树。可以递归使用性质，获得左子树的根节点和右子树的根节点，直到数组的元素被分成只有一个元素。</p>
+<h3 id="将数组转换成二叉搜索树"><a href="https://leetcode-cn.com/problems/convert-sorted-array-to-binary-search-tree/">将数组转换成二叉搜索树</a></h3>
+<p>分析：</p>
+<ol>
+<li>升序数组的中间元素是二叉搜索树的根节点，中间元素的左侧元素为二叉搜索树的左子树，中间元素的右子树是二叉搜索树的右子树。</li>
+<li>左右子树按照上个步进行递归处理，递归的边界为只有一个元素。</li>
+<li>此处使用了分治的思想，分是根据树的根节点是是数组中央元素，治了根节点的左子树等于数组中央元素的左侧，根节点的右子树等于数组中央元素的右侧。</li>
+</ol>
+<p>代码实现：</p>
+<pre><code>//入口方法
+ public TreeNode sortedArrayToBST(int[] nums) {
+       // base case
+       if(nums == null || nums.length == 0){
+            return null;
+        }
+        // 入参nums为数组
+        // 0 为二叉搜索树在数组中开始元素的位置
+        // nums.length -1 为二叉搜索树在数组中结束的位置
+        //因为某一个子树的元素一定是在数组中连续的
+        //初始的二叉搜索树的元素是整一个数组
+       return createTree(nums,0,nums.length -1);
+    }
+    
+    TreeNode createTree(int[] nums, int start, int end){
+        //生成左子树过程 end不断减小
+        //生成右子树start会不断增加
+        //最终start和end会走向相遇，一定start超过end，就应该退出递归。
+        if(start &gt; end){
+            return null;
+        }
+        // 获取中间元素的序号
+        int mid = (start + end) / 2;
+        //获取中间元素
+        int rootVal = nums[mid];
+        //生成根节点
+        TreeNode root =  new TreeNode(rootVal);
+        //根节点连接左子树，并递归生成左子树
+        root.left = createTree(nums, start, mid-1);
+         //根节点连接右子树，并递归生成右子树
+        root.right = createTree(nums, mid+1, end);
+        //返回根节点，给上一层递归进行连接
+        return root;
+    }
+
+</code></pre>
+<ul>
+<li>有序数组转成二叉搜索树的关键是将中间元素作为根节点，再连接左右子树并通过同样的递归，生成左右子树。</li>
+<li>利用二叉搜索树的开始和结束序号，并且不断缩小开始和结束的范围来达到递归边界。</li>
+</ul>
+<h3 id="有序链表转换二叉搜索树"><a href="https://leetcode-cn.com/problems/convert-sorted-list-to-binary-search-tree/">有序链表转换二叉搜索树</a></h3>
+<p>分析：</p>
+<ol>
+<li>有序链表和有序数组转换成二叉搜索树的关键思想是一致的，以中间节点作为左右子树，递归左右子树直到数组元素不存在（end越过start）。</li>
+<li>关键是有序链表获取中间迭代，需要每次都迭代一次，时间复杂度是O(N)，数组获取中间节点时间复杂度是O(1)，获取左子树和右子树的中间节点如何获取问题，</li>
+<li>获取左右子树的中间节点，使用快慢指针的方法，需要指定开始节点和结束节点。开始节点和结束节点，其实可以根据中间节点获取。</li>
+</ol>
+<p>代码实现：</p>
+<pre><code>
+class Solution {
+//leetcode 入口方式
+       public TreeNode sortedListToBST(ListNode head) {
+       //初始 开始节点是head，结束节点是null，即链表的末尾
+        return buildTree(head, null);
+    }
+    /**
+     *左闭右开，
+     * @param left 左边界，可以根据中间节点获取
+     * @param right 右边界，right的上个节点是二叉搜索树的元素。可以根据中间节点获取
+     * @return
+     */
+    TreeNode buildTree(ListNode left, ListNode right){
+        //当两者相等时 证明达到了边界
+        if(left == right){
+            return null;
+        }
+        // 通过快慢指针获取到中间节点
+        ListNode mid = getMidNode(left, right);
+        //构造中间节点
+        TreeNode root = new TreeNode(mid.val);
+        //mid会逐渐缩小，直到等于left
+        //mid的上一个元素是左子树的元素，从边界条件获得。
+        root.left = buildTree(left, mid);
+        //mid.next会逐渐扩大，直到等于right
+        //left是子树的元素
+        root.right = buildTree(mid.next, right);
+        return root;
+    }
+    ListNode getMidNode(ListNode left, ListNode right){
+        ListNode fast = left;
+        ListNode slow = left;
+        //到达右边界结束
+        while(fast != right &amp;&amp; fast.next != right){
+        //快慢指针
+            fast = fast.next;
+            fast = fast.next;
+            slow = slow.next;
+        }
+        return slow;
+    }
+}
+
+
+</code></pre>
+<ul>
+<li>为什么设计成左闭右开，因为链表无法获取上一个元素，只能获取下一个元素。中间节点的上一个元素的左子树的元素，但是根据中间节点无法获取，所以左子树的需要右开。中间节点的下一个元素是右子树的元素，可以通过next获取，所有右子树需要左闭。</li>
+<li>为了保证左闭右开，递归地基本条件设为左右节点相等时结束，因为此时左节点已经移到list外。</li>
+<li>获取中间元素的一般步骤是fast先走到中间，再fast和slow一起移到，直到fast到末尾，那么slow就是中间节点。但是此处然每一次迭代fast多走一步也到达了比slow多走一般距离的效果，实际上时间复杂度是一样的，只是取巧的方式更简洁。</li>
+</ul>
+<h3 id="二叉搜索树与双向链表"><a href="https://leetcode-cn.com/problems/er-cha-sou-suo-shu-yu-shuang-xiang-lian-biao-lcof/">二叉搜索树与双向链表</a></h3>
+<p>分析:</p>
+<ol>
+<li>将二叉搜索树转换成排序的循环双向链表，因为是排序的，所以一定是中序遍历。</li>
+<li>通过中序遍历，如何生成循环双向链表，需要知道循环双向链表是什么样的。<br>
+双向链表是每个节点有指向前驱节点和后驱节点的指针，循环是指第一个节点的前驱节点是链表的末尾节点，末尾的后驱节点是第一个节点。</li>
+<li>根据分析，可以分成两部分处理，中序遍历过程中生成双向链表；最后才将双向链表变成循环链表。</li>
+</ol>
+<p>代码实现:</p>
+<pre><code>
+/*
+// Definition for a Node.
+class Node {
+    public int val;
+    public Node left;
+    public Node right;
+    public Node() {}
+    public Node(int _val) {
+        val = _val;
+    }
+    public Node(int _val,Node _left,Node _right) {
+        val = _val;
+        left = _left;
+        right = _right;
+    }
+};
+*/
+class Solution {
+    //中序遍历，可以从小到大遍历二叉搜索树
+    //定义root.left 为前驱
+    //定义root.right 为后继
+    
+    // ans是循环双向链表的第一个节点
+    Node ans = null;
+    //pre是当前节点的前驱节点，迭代到最后是循环双向链表的最后一个节点
+    Node pre = null;
+    public Node treeToDoublyList(Node root) {
+        //base case
+        if(root == null){
+            return root;
+        }
+        //生成双向链表
+        dfs(root);
+        // 双向链表转换成循环双向链表
+        pre.right = ans;
+        ans.left = pre;
+        return ans;
+    }
+    void dfs(Node cur){
+        //终止条件，当前节点到了双向链表的末尾null
+        if(cur == null){
+            return ;
+        }
+        //遍历左子树
+        dfs(cur.left);
+        
+        //中间节点
+        if(pre == null){ //pre是第一个节点
+            //pre未被赋值，标识到达了链表的最前端，获取链表头
+           ans = cur;
+        }else{ //pre已经进入链表中
+            //生成前驱节点的后驱节点为当前节点
+            pre.right = cur;
+        }
+        
+        //当前节点的前驱节点指向上一个节点
+        cur.left =pre;
+        //更新上一个节点为当前节点，驱动递归进行下去
+        pre = cur;
+        
+        //遍历右子树
+        //后驱移动到右子树
+        dfs(cur.right);
+    }
+}
+</code></pre>
+<ul>
+<li>生成双向链表时，不是将当前节点cur的前驱和后驱指定到对应元素，而是生成当前节点cur和上一个节点pre之间的双向指向关系，即生成前一个节点pre的后驱指向当前节点cur，当前节点cur的前驱节点指向上一个节点pre。</li>
+<li>为了使得递归继续下去，需要不断的更新前一个节点pre和当前节点cur，前一个节点在下一个递归就是当前节点。</li>
+<li>当递归到最后，cur'一定会到链表之外，此时返回null，pre为链表的最后一个元素。</li>
+<li>一个判断pre是否为null，就是判断pre是否进入了链表。如果未进入记录cur到ans，最后形成循环，只需要ans和pre互相指向即可。</li>
+</ul>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://hezhuhui.github.io/algorithm/" class="tag">
+                    数据结构与算法
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://hezhuhui.github.io/redis-ji-chu-shu-ju-jie-gou-map/">
+                  <h3 class="post-title">
+                    redis基础数据结构--map
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+
+  </body>
+</html>
